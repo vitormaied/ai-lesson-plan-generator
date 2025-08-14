@@ -29,7 +29,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             password: password,
             isAdmin: false,
             usageCount: 0,
-            subscription: { plan: 'Free', planGenerations: 5 }
+            subscription: { plan: 'Free', planGenerations: 2 }
         });
 
         await newUser.save();
