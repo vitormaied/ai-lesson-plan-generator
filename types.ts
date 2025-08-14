@@ -14,6 +14,7 @@ export interface Team {
   id: string;
   name: string; // Nome da escola
   adminId: string; // ID do usuário que é admin da equipe
+  memberLimit: number; // Limite de membros na equipe
 }
 
 export interface Invite {

@@ -3,6 +3,14 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import type { User, SubscriptionPlan, Team, Invite } from '../types'; // Ajuste o caminho conforme necessário
 
+// Declare global types for mongoose caching
+declare global {
+  var mongoose: {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+  };
+}
+
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
@@ -31,7 +39,7 @@ async function dbConnect() {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
       return mongoose;
     });
   }
