@@ -1,13 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
-import dotenv from 'dotenv';
-import path from 'path';
 
-// Force loading .env.local from the project root
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-07-30.basil', // Use the latest API version
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2023-10-16',
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
