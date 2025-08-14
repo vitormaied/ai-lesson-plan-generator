@@ -1,0 +1,5 @@
+{
+  "name": "AI Lesson Plan Generator",
+  "description": "An intelligent assistant to help educators create detailed and structured lesson plans. Simply provide the topic, grade, and subject, and let the AI generate a comprehensive plan including BNCC skills, objectives, methodology, resources, and assessments.",
+  "requestFramePermissions": []
+}
