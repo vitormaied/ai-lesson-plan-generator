@@ -1,7 +1,6 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { dbConnect, UserModel } from '../_db_mongo.js';
-import { checkAndUpdateExpiredSubscriptions } from '../utils/subscription-checker.js';
+import { dbConnect, UserModel } from '../_db_mongo';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method !== 'POST') {
@@ -29,16 +28,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         if (isMatch) {
             console.log(`[API] Login successful for: ${user.email}`);
             
-            // Verificar se a assinatura está expirada antes de retornar o usuário
-            const { user: updatedUser, wasExpired } = await checkAndUpdateExpiredSubscriptions(user.id);
-            
-            if (wasExpired) {
-                console.log(`[API] Subscription expired for user: ${user.email}`);
-            }
-            
             // Return a sanitized user object (without password)
-            const userToReturn = updatedUser || user;
-            const userObject = userToReturn.toObject();
+            const userObject = user.toObject();
             delete userObject.password;
             return res.status(200).json({ success: true, user: userObject });
         } else {

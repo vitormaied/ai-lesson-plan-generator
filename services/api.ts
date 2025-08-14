@@ -107,29 +107,15 @@ export const api = {
   },
 
   getAdminStats: async (): Promise<{ totalUsers: number; premiumUsers: number; plansGenerated: number }> => {
-    try {
-      const response = await fetch('/api/admin/stats');
-      if (!response.ok) {
-        throw new Error('Failed to fetch admin stats');
-      }
-      return await response.json();
-    } catch (error) {
-      console.error("Network or other error:", error);
-      return { totalUsers: 0, premiumUsers: 0, plansGenerated: 0 };
-    }
+    // Admin stats API was removed - returning mock data
+    console.warn('Admin stats API not available');
+    return { totalUsers: 0, premiumUsers: 0, plansGenerated: 0 };
   },
 
   getAllUsers: async (): Promise<User[]> => {
-    try {
-      const response = await fetch('/api/admin/users');
-      if (!response.ok) {
-        throw new Error('Failed to fetch users');
-      }
-      return await response.json();
-    } catch (error) {
-      console.error("Network or other error:", error);
-      return [];
-    }
+    // Admin users API was removed - returning empty array
+    console.warn('Admin users API not available');
+    return [];
   },
 
   getTeamMembers: async (teamId: string): Promise<User[]> => {

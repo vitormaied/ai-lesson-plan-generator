@@ -14,7 +14,8 @@
       "Bash(npm install)",
       "Bash(node check-users.js)",
       "Bash(node:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(find:*)"
     ],
     "defaultMode": "acceptEdits"
   }

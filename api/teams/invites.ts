@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { dbConnect, UserModel, TeamModel, InviteModel } from '../_db_mongo.js';
+import { dbConnect, UserModel, TeamModel, InviteModel } from '../_db_mongo';
 import type { Invite } from '../../types';
 import { randomBytes } from 'crypto';
 
