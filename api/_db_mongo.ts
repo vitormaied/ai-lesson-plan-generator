@@ -6,8 +6,8 @@ import type { User, SubscriptionPlan, Team, Invite } from '../types'; // Ajuste 
 // Declare global types for mongoose caching
 declare global {
   var mongoose: {
-    conn: typeof mongoose | null;
-    promise: Promise<typeof mongoose> | null;
+    conn: any;
+    promise: Promise<any> | null;
   };
 }
 
