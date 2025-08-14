@@ -17,26 +17,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Em ambiente de desenvolvimento, simular resposta PIX
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('[PIX Simulation] Creating simulated PIX payment for development');
-      
-      const simulatedPaymentIntent = {
-        id: `pi_test_pix_${Date.now()}`,
-        client_secret: `pi_test_pix_${Date.now()}_secret_test`,
-        amount: 1990, // R$ 19,90 em centavos
-        currency: 'brl'
-      };
-
-      return res.status(200).json({ 
-        paymentIntentId: simulatedPaymentIntent.id,
-        clientSecret: simulatedPaymentIntent.client_secret,
-        amount: simulatedPaymentIntent.amount,
-        currency: simulatedPaymentIntent.currency,
-        isSimulation: true
-      });
-    }
-
+    // Verificar se PIX está disponível na conta
+    console.log('[PIX] Attempting to create PIX payment for:', customerEmail);
+    
     // Código de produção para Stripe real
     // Primeiro criar um customer no Stripe se não existir
     const customers = await stripe.customers.list({
@@ -57,24 +40,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    // Criar o Payment Intent para PIX
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: 1990, // R$ 19,90 em centavos (ajustar conforme o plano)
-      currency: 'brl',
-      customer: customer.id,
-      payment_method_types: ['pix'],
-      metadata: {
-        userId: userId,
-        priceId: priceId,
-        plan: priceId.includes('Personal') ? 'Personal' : 'School'
-      },
-      // PIX expira em 24 horas por padrão
-      payment_method_options: {
-        pix: {
-          expires_after_seconds: 86400 // 24 horas
+    // Tentar criar o Payment Intent para PIX
+    let paymentIntent;
+    try {
+      paymentIntent = await stripe.paymentIntents.create({
+        amount: priceId.includes('Personal') ? 1990 : 14700, // Personal: R$ 19,90, School: R$ 147,00
+        currency: 'brl',
+        customer: customer.id,
+        payment_method_types: ['pix'],
+        metadata: {
+          userId: userId,
+          priceId: priceId,
+          plan: priceId.includes('Personal') ? 'Personal' : 'School'
+        },
+        payment_method_options: {
+          pix: {
+            expires_after_seconds: 86400 // 24 horas
+          }
         }
+      });
+    } catch (pixError) {
+      // Se PIX não estiver disponível, retornar erro específico
+      if (pixError.message.includes('pix')) {
+        return res.status(400).json({ 
+          message: 'PIX não está habilitado para esta conta. Entre em contato com o suporte.',
+          error: 'PIX_NOT_ENABLED',
+          details: pixError.message
+        });
       }
-    });
+      throw pixError;
+    }
 
     return res.status(200).json({ 
       paymentIntentId: paymentIntent.id,
