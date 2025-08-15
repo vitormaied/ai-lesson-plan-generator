@@ -15,7 +15,8 @@
       "Bash(node check-users.js)",
       "Bash(node:*)",
       "Bash(git push:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(vercel:*)"
     ],
     "defaultMode": "acceptEdits"
   }

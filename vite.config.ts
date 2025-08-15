@@ -10,7 +10,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3002', // This will be the Vercel CLI dev server
+        target: 'http://localhost:3003', // This will be the Vercel CLI dev server
         changeOrigin: true,
       },
     },

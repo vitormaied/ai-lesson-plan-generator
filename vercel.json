@@ -1,4 +1,5 @@
 {
+  "alias": ["ai-lesson-plan-generator.vercel.app"],
   "env": {
     "VERCEL_URL": "https://ai-lesson-plan-generator.vercel.app"
   },
