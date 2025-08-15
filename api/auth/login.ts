@@ -3,15 +3,30 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { dbConnect, UserModel } from '../_db_mongo';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+    // Add CORS headers
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+    
     if (req.method !== 'POST') {
         return res.status(405).json({ message: 'Only POST requests allowed' });
     }
 
+    console.log('[LOGIN] API called with method:', req.method);
+    console.log('[LOGIN] Request body received:', req.body ? 'has body' : 'no body');
+    
     const { email, password } = req.body;
 
     if (!email || !password) {
+        console.log('[LOGIN] Missing credentials - email:', !!email, 'password:', !!password);
         return res.status(400).json({ message: 'Email and password are required' });
     }
+    
+    console.log('[LOGIN] Attempting login for:', email);
 
     await dbConnect();
 
