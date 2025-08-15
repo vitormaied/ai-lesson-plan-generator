@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { buffer } from 'micro';
 import dotenv from 'dotenv';
 import path from 'path';
-import { dbConnect, UserModel } from '../_db_mongo'; // Import your DB connection and User model
+import { dbConnect, UserModel } from '../_db_mongo.js'; // Import your DB connection and User model
 
 // Load environment variables
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });

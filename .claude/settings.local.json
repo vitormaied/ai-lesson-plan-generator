@@ -16,7 +16,9 @@
       "Bash(node:*)",
       "Bash(git push:*)",
       "Bash(find:*)",
-      "Bash(vercel:*)"
+      "Bash(vercel:*)",
+      "Bash(git commit:*)",
+      "Bash(npm test)"
     ],
     "defaultMode": "acceptEdits"
   }

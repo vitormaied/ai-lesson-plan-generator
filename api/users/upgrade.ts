@@ -1,6 +1,6 @@
 
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { dbConnect, UserModel } from '../_db_mongo';
+import { dbConnect, UserModel } from '../_db_mongo.js';
 import type { SubscriptionPlan } from '../../types';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
