@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2025-07-30.basil',
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -17,6 +17,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    let baseUrl = process.env.VERCEL_URL || 'http://localhost:5174';
+    if (baseUrl && !baseUrl.startsWith('http')) {
+      baseUrl = `https://${baseUrl}`;
+    }
+    console.log('[Stripe] Using base URL:', baseUrl);
+    
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       line_items: [
@@ -25,8 +31,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           quantity: 1,
         },
       ],
-      success_url: `${process.env.VERCEL_URL || 'http://localhost:5174'}/#/app?payment=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.VERCEL_URL || 'http://localhost:5174'}/#/app?payment=cancelled`,
+      success_url: `${baseUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/?payment=cancelled`,
       client_reference_id: userId, // Pass the userId to the session
     });
 

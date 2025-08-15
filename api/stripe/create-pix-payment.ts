@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2025-07-30.basil',
 });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -59,13 +59,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           }
         }
       });
-    } catch (pixError) {
+    } catch (pixError: any) {
       // Se PIX não estiver disponível, retornar erro específico
-      if (pixError.message.includes('pix')) {
+      if (pixError.message && pixError.message.includes('pix')) {
         return res.status(400).json({ 
           message: 'PIX não está habilitado para esta conta. Entre em contato com o suporte.',
           error: 'PIX_NOT_ENABLED',
-          details: pixError.message
+          details: pixError.message || 'PIX error'
         });
       }
       throw pixError;
