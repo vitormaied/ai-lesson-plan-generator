@@ -17,7 +17,7 @@ import { TeamManagementPage } from './pages/TeamManagementPage';
 import { AcceptInvitePage } from './pages/AcceptInvitePage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { StripeTestPage } from './pages/StripeTestPage';
-import { PixPaymentPage } from './pages/PixPaymentPage';
+import { PixPaymentSimulationPage } from './pages/PixPaymentSimulationPage';
 
 const LessonPlannerApp = () => {
   const [currentPlan, setCurrentPlan] = useState<LessonPlan | null>(null);
@@ -321,7 +321,7 @@ const AppRouter = () => {
             case '#/stripe-test':
                 return <StripeTestPage />;
             case '#/pix-payment':
-                return auth.currentUser ? <PixPaymentPage /> : null;
+                return auth.currentUser ? <PixPaymentSimulationPage /> : null;
             case '#/':
             default:
                 return <LandingPage />;

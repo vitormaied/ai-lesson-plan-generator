@@ -109,44 +109,9 @@ export const PricingPage: React.FC = () => {
             return;
         }
 
-        let priceId = '';
-        if (plan === 'Personal') {
-            priceId = 'price_1RwpNy7vYeqK9fZIrp9q5bnd'; // Personal Plan Price ID (LIVE)
-        } else if (plan === 'School') {
-            priceId = 'price_1RwpOx7vYeqK9fZI1YbfzxIy'; // School Plan Price ID (LIVE)
-        }
-
-        if (!priceId) {
-            alert('Plano não encontrado.');
-            return;
-        }
-
-        try {
-            const response = await fetch('/api/stripe/create-pix-payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    priceId, 
-                    userId: currentUser.id,
-                    customerEmail: currentUser.email,
-                    customerName: currentUser.name
-                }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                // Redirecionar para página de PIX com as informações do pagamento
-                window.location.hash = `#/pix-payment?paymentIntentId=${data.paymentIntentId}&amount=${data.amount}`;
-            } else {
-                alert(data.message || 'Erro ao iniciar o processo de pagamento PIX.');
-            }
-        } catch (error) {
-            console.error('Error initiating PIX payment:', error);
-            alert('Ocorreu um erro ao iniciar o processo de pagamento PIX.');
-        }
+        // Redirect to PIX simulation page
+        const paymentId = `pix_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        window.location.hash = `#/pix-payment?paymentId=${paymentId}&plan=${plan}`;
     };
 
     const currentPlan = currentUser?.subscription.plan || 'Free';
