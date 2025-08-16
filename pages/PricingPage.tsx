@@ -3,16 +3,14 @@ import { useAuth } from '../hooks/useAuth.tsx';
 import { CheckCircle, Star, Users } from '../components/Icons';
 import { loadStripe } from '@stripe/stripe-js';
 
-const PricingCard = ({ plan, price, description, features, isPopular, onSelectPlan, onSelectPixPlan, ctaText, showPaymentOptions }: {
+const PricingCard = ({ plan, price, description, features, isPopular, onSelectPlan, ctaText }: {
     plan: string;
     price: string;
     description: string;
     features: string[];
     isPopular?: boolean;
     onSelectPlan: () => void;
-    onSelectPixPlan?: () => void;
     ctaText: string;
-    showPaymentOptions?: boolean;
 }) => (
     <div className={`relative border-2 rounded-lg p-8 flex flex-col ${isPopular ? 'border-primary' : 'border-gray-200'}`}>
         {isPopular && (
@@ -32,28 +30,11 @@ const PricingCard = ({ plan, price, description, features, isPopular, onSelectPl
                 </li>
             ))}
         </ul>
-        {showPaymentOptions ? (
-            <div className="mt-8 space-y-3">
-                <button 
-                    onClick={onSelectPlan}
-                    className={`block w-full py-3 px-6 rounded-md text-center font-medium ${isPopular ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-gray-100 text-primary hover:bg-gray-200'}`}>
-                    💳 {ctaText} - Cartão
-                </button>
-                {onSelectPixPlan && (
-                    <button 
-                        onClick={onSelectPixPlan}
-                        className="block w-full py-3 px-6 rounded-md text-center font-medium bg-green-600 text-white hover:bg-green-700">
-                        🇧🇷 {ctaText} - PIX
-                    </button>
-                )}
-            </div>
-        ) : (
-            <button 
-                onClick={onSelectPlan}
-                className={`mt-8 block w-full py-3 px-6 rounded-md text-center font-medium ${isPopular ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-gray-100 text-primary hover:bg-gray-200'}`}>
-                {ctaText}
-            </button>
-        )}
+        <button 
+            onClick={onSelectPlan}
+            className={`mt-8 block w-full py-3 px-6 rounded-md text-center font-medium ${isPopular ? 'bg-primary text-white hover:bg-primary-dark' : 'bg-gray-100 text-primary hover:bg-gray-200'}`}>
+            {ctaText}
+        </button>
     </div>
 );
 
@@ -103,16 +84,6 @@ export const PricingPage: React.FC = () => {
         }
     };
 
-    const handleSelectPixPlan = async (plan: 'Personal' | 'School') => {
-        if (!currentUser) {
-            window.location.hash = '#/login';
-            return;
-        }
-
-        // Redirect to PIX simulation page
-        const paymentId = `pix_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        window.location.hash = `#/pix-payment?paymentId=${paymentId}&plan=${plan}`;
-    };
 
     const currentPlan = currentUser?.subscription.plan || 'Free';
 
@@ -149,9 +120,7 @@ export const PricingPage: React.FC = () => {
                             'Suporte prioritário'
                         ]}
                         onSelectPlan={() => handleSelectPlan('Personal')}
-                        onSelectPixPlan={() => handleSelectPixPlan('Personal')}
                         ctaText={currentPlan === 'Personal' ? 'Seu Plano Atual' : 'Fazer Upgrade'}
-                        showPaymentOptions={currentPlan !== 'Personal'}
                     />
                     <PricingCard 
                         plan="School"
@@ -164,9 +133,7 @@ export const PricingPage: React.FC = () => {
                             'Dashboard administrativo'
                         ]}
                         onSelectPlan={() => handleSelectPlan('School')}
-                        onSelectPixPlan={() => handleSelectPixPlan('School')}
                         ctaText={'Contatar Vendas'}
-                        showPaymentOptions={currentPlan !== 'School'}
                     />
                 </div>
             </div>

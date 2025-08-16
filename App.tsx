@@ -17,7 +17,6 @@ import { TeamManagementPage } from './pages/TeamManagementPage';
 import { AcceptInvitePage } from './pages/AcceptInvitePage';
 import { UserProfilePage } from './pages/UserProfilePage';
 import { StripeTestPage } from './pages/StripeTestPage';
-import { PixPaymentSimulationPage } from './pages/PixPaymentSimulationPage';
 
 const LessonPlannerApp = () => {
   const [currentPlan, setCurrentPlan] = useState<LessonPlan | null>(null);
@@ -265,7 +264,7 @@ const AppRouter = () => {
         if (!auth.isLoaded) return;
         
         const publicPages = ['#/', '#/login', '#/register', '#/pricing', '#/accept-invite'];
-        const protectedPages = ['#/app', '#/admin', '#/team', '#/profile', '#/pix-payment'];
+        const protectedPages = ['#/app', '#/admin', '#/team', '#/profile'];
 
         const isPublicPage = publicPages.includes(routeWithoutQuery);
         const isProtectedPage = protectedPages.includes(routeWithoutQuery);
@@ -320,8 +319,6 @@ const AppRouter = () => {
                 return auth.currentUser?.isAdmin ? <AdminDashboard /> : null;
             case '#/stripe-test':
                 return <StripeTestPage />;
-            case '#/pix-payment':
-                return auth.currentUser ? <PixPaymentSimulationPage /> : null;
             case '#/':
             default:
                 return <LandingPage />;
