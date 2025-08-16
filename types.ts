@@ -43,6 +43,7 @@ export interface LessonPlanInput {
   schoolName: string;
   teacherName: string;
   educationLevel: 'Educação Infantil' | 'Ensino Fundamental' | 'Ensino Médio' | '';
+  lessonCount: number;
 }
 
 export interface LessonPlan extends LessonPlanInput {
@@ -57,4 +58,5 @@ export interface LessonPlan extends LessonPlanInput {
   isAdapted?: boolean;
   studentName?: string;
   studentNeeds?: string;
+  suggestedLessonCount?: number; // Quantidade de aulas sugerida pela IA
 }

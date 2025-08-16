@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import type { LessonPlan } from '../types';
-import { BookOpen, Target, ClipboardList, Edit3, Save, XCircle, FileDown, Sparkles, FileText, School, User, Lightbulb, Puzzle, Accessibility } from './Icons';
+import { BookOpen, Target, ClipboardList, Edit3, Save, XCircle, FileDown, Sparkles, FileText, School, User, Lightbulb, Puzzle, Accessibility, Calendar } from './Icons';
 import jsPDF from 'jspdf';
 import { Packer, Document, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx';
 import saveAs from 'file-saver';
@@ -199,8 +199,14 @@ export const LessonPlanDisplay: React.FC<LessonPlanDisplayProps> = ({ plan, onUp
         `Nível: ${plan.educationLevel}`,
         `Turma: ${plan.grade}`,
         `Data: ${new Date(plan.date).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}`,
+        `Aulas: ${plan.lessonCount} ${plan.lessonCount === 1 ? 'aula' : 'aulas'} solicitada${plan.lessonCount !== 1 ? 's' : ''}`,
     ];
     headerContent.forEach(line => writeText(line, 10, 'normal', { mb: 2}));
+
+    if (plan.suggestedLessonCount && plan.suggestedLessonCount !== plan.lessonCount) {
+        y += 4;
+        writeText(`Sugestão da IA: Este conteúdo seria melhor trabalhado em ${plan.suggestedLessonCount} ${plan.suggestedLessonCount === 1 ? 'aula' : 'aulas'}`, 10, 'normal', { mb: 2});
+    }
 
     if (plan.isAdapted) {
         y += 4;
@@ -284,8 +290,20 @@ export const LessonPlanDisplay: React.FC<LessonPlanDisplayProps> = ({ plan, onUp
              <div className="flex items-start"><User className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-0.5" /><span className="font-semibold text-gray-600">Professor(a):</span><span className="ml-2 text-gray-800">{plan.teacherName}</span></div>
              <div className="flex items-start"><ClipboardList className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-0.5" /><span className="font-semibold text-gray-600">Nível:</span><span className="ml-2 text-gray-800">{plan.educationLevel}</span></div>
              <div className="flex items-start"><ClipboardList className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-0.5" /><span className="font-semibold text-gray-600">Turma:</span><span className="ml-2 text-gray-800">{plan.grade}</span></div>
-             <div className="flex items-start"><FileText className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-0.5" /><span className="font-semibold text-gray-600">Data:</span><span className="ml-2 text-gray-800">{new Date(plan.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</span></div>
+             <div className="flex items-start"><Calendar className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-0.5" /><span className="font-semibold text-gray-600">Data:</span><span className="ml-2 text-gray-800">{new Date(plan.date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</span></div>
+             <div className="flex items-start"><BookOpen className="h-5 w-5 mr-2 text-primary flex-shrink-0 mt-0.5" /><span className="font-semibold text-gray-600">Aulas:</span><span className="ml-2 text-gray-800">{plan.lessonCount} {plan.lessonCount === 1 ? 'aula' : 'aulas'} solicitada{plan.lessonCount !== 1 ? 's' : ''}</span></div>
           </div>
+          {plan.suggestedLessonCount && plan.suggestedLessonCount !== plan.lessonCount && (
+            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-start">
+                <Lightbulb className="h-5 w-5 mr-2 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-blue-800">Sugestão da IA: </span>
+                  <span className="text-blue-700">Este conteúdo seria melhor trabalhado em {plan.suggestedLessonCount} {plan.suggestedLessonCount === 1 ? 'aula' : 'aulas'}</span>
+                </div>
+              </div>
+            </div>
+          )}
           {plan.isAdapted && (
             <div className="mt-4 p-3 bg-indigo-50 border border-indigo-200 rounded-lg grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="md:col-span-1 flex items-start">

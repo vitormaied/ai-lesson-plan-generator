@@ -21,7 +21,7 @@ const lessonPlanSchema = {
     },
     methodology: {
       type: Type.STRING,
-      description: "Descreva uma metodologia de ensino detalhada (ex: aula expositiva, debate, atividades em grupo). Dê sugestões práticas de como conduzir a aula, considerando o nível de ensino."
+      description: "Descreva uma metodologia de ensino detalhada (ex: aula expositiva, debate, atividades em grupo). Dê sugestões práticas de como conduzir a aula, considerando o nível de ensino e a quantidade de aulas."
     },
     resources: {
       type: Type.ARRAY,
@@ -32,9 +32,13 @@ const lessonPlanSchema = {
       type: Type.ARRAY,
       description: "Sugira 2-3 métodos de avaliação formativa ou somativa, apropriados para a turma.",
       items: { type: Type.STRING }
+    },
+    suggestedLessonCount: {
+      type: Type.INTEGER,
+      description: "Com base na complexidade do conteúdo, nível de ensino e turma, sugira a quantidade ideal de aulas (1-8) para trabalhar este conteúdo adequadamente."
     }
   },
-  required: ["bnccSkills", "objectives", "methodology", "resources", "assessment"]
+  required: ["bnccSkills", "objectives", "methodology", "resources", "assessment", "suggestedLessonCount"]
 };
 
 const handleApiCall = async (apiKey: string, prompt: string, responseSchema: object) => {
@@ -66,7 +70,7 @@ const handleApiCall = async (apiKey: string, prompt: string, responseSchema: obj
 };
 
 export const generateLessonPlan = async (apiKey: string, input: LessonPlanInput): Promise<Omit<LessonPlan, 'id' | 'createdAt' | keyof LessonPlanInput>> => {
-  const { date, grade, subject, topic, educationLevel, teacherName, schoolName } = input;
+  const { date, grade, subject, topic, educationLevel, teacherName, schoolName, lessonCount } = input;
 
   const prompt = `
     Por favor, crie um plano de aula detalhado e estruturado.
@@ -77,6 +81,13 @@ export const generateLessonPlan = async (apiKey: string, input: LessonPlanInput)
     - Turma/Série: ${grade}
     - Disciplina: ${subject}
     - Conteúdo Específico: ${topic}
+    - Quantidade de Aulas Solicitada: ${lessonCount} aula(s)
+
+    IMPORTANTE: 
+    1. Analise se a quantidade de aulas solicitada (${lessonCount}) é adequada para o conteúdo "${topic}" considerando o nível "${educationLevel}" e turma "${grade}".
+    2. Se você achar que o conteúdo pode ser bem trabalhado em uma quantidade diferente de aulas, sugira o número ideal no campo "suggestedLessonCount".
+    3. A metodologia deve considerar a distribuição do conteúdo ao longo das aulas (seja a quantidade solicitada ou sugerida).
+    4. Se for mais de uma aula, explique brevemente como o conteúdo seria dividido entre as aulas.
 
     O plano deve ser criativo, prático e estritamente adequado para o nível de ensino e a turma especificada.
     Siga o schema JSON fornecido para a resposta.

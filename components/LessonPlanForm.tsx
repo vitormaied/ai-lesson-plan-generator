@@ -30,6 +30,7 @@ export const LessonPlanForm: React.FC<LessonPlanFormProps> = ({ user, onSubmit, 
     schoolName: '',
     teacherName: user?.email.split('@')[0] || '',
     educationLevel: '',
+    lessonCount: 1,
   });
 
   const currentPlan = user?.subscription?.plan || 'Free';
@@ -59,7 +60,8 @@ export const LessonPlanForm: React.FC<LessonPlanFormProps> = ({ user, onSubmit, 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const processedValue = name === 'lessonCount' ? parseInt(value, 10) : value;
+    setFormData(prev => ({ ...prev, [name]: processedValue }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -146,6 +148,20 @@ export const LessonPlanForm: React.FC<LessonPlanFormProps> = ({ user, onSubmit, 
         <div>
           <Label htmlFor="topic">Conteúdo Específico</Label>
           <Input type="text" name="topic" id="topic" placeholder="Ex: Frações e números decimais" value={formData.topic} onChange={handleChange} required disabled={limitReached || isLoading} />
+        </div>
+        <div>
+          <Label htmlFor="lessonCount">Quantidade de Aulas</Label>
+          <Select name="lessonCount" id="lessonCount" value={formData.lessonCount} onChange={handleChange} required disabled={limitReached || isLoading}>
+            <option value={1}>1 aula</option>
+            <option value={2}>2 aulas</option>
+            <option value={3}>3 aulas</option>
+            <option value={4}>4 aulas</option>
+            <option value={5}>5 aulas</option>
+            <option value={6}>6 aulas</option>
+            <option value={7}>7 aulas</option>
+            <option value={8}>8 aulas</option>
+          </Select>
+          <p className="mt-1 text-xs text-gray-500">A IA analisará o conteúdo e poderá sugerir uma quantidade diferente se necessário</p>
         </div>
         
         {limitReached ? (
