@@ -68,9 +68,9 @@ export const PricingPage: React.FC = () => {
 
         let priceId = '';
         if (plan === 'Personal') {
-            priceId = 'price_1RvIm19xW0kbCEOQhBU8g8is'; // Your Personal Plan Price ID
+            priceId = 'price_1RwpNy7vYeqK9fZIrp9q5bnd'; // Personal Plan Price ID (LIVE)
         } else if (plan === 'School') {
-            priceId = 'price_1RvInP9xW0kbCEOQEbtb4rD1'; // Your School Plan Price ID
+            priceId = 'price_1RwpOx7vYeqK9fZI1YbfzxIy'; // School Plan Price ID (LIVE)
         }
 
         if (!priceId) {
@@ -111,9 +111,9 @@ export const PricingPage: React.FC = () => {
 
         let priceId = '';
         if (plan === 'Personal') {
-            priceId = 'price_1RvIm19xW0kbCEOQhBU8g8is'; // Your Personal Plan Price ID
+            priceId = 'price_1RwpNy7vYeqK9fZIrp9q5bnd'; // Personal Plan Price ID (LIVE)
         } else if (plan === 'School') {
-            priceId = 'price_1RvInP9xW0kbCEOQEbtb4rD1'; // Your School Plan Price ID
+            priceId = 'price_1RwpOx7vYeqK9fZI1YbfzxIy'; // School Plan Price ID (LIVE)
         }
 
         if (!priceId) {
