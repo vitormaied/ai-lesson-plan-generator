@@ -64,27 +64,45 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         await dbConnect();
 
         // Update the user in the database using findOneAndUpdate with the custom 'id' field
-        await UserModel.findOneAndUpdate({ id: userId }, {
+        const updatedUser = await UserModel.findOneAndUpdate({ id: userId }, {
           $set: {
-            'subscription.plan': 'Personal', // Or dynamically determine from session line items
+            'subscription.plan': 'Personal',
             'subscription.status': 'active',
             'subscription.stripeId': stripeSubscriptionId,
+            'subscription.planGenerations': -1, // Unlimited for Personal plan
+            'subscription.isActive': true,
           },
-        });
+        }, { new: true }); // Return updated document
 
-        console.log(`Successfully updated subscription for user ${userId}`);
+        if (!updatedUser) {
+          throw new Error(`User with id ${userId} not found in database`);
+        }
+
+        console.log(`Successfully updated subscription for user ${userId} (${updatedUser.email}) to Personal plan with unlimited generations`);
         break;
 
       case 'customer.subscription.deleted':
         const subscription = event.data.object as Stripe.Subscription;
         await dbConnect();
-        await UserModel.findOneAndUpdate({'subscription.stripeId': subscription.id}, {
+        
+        const cancelledUser = await UserModel.findOneAndUpdate(
+          {'subscription.stripeId': subscription.id}, 
+          {
             $set: {
-                'subscription.plan': 'Free', 
-                'subscription.status': 'cancelled'
+              'subscription.plan': 'Free', 
+              'subscription.status': 'cancelled',
+              'subscription.planGenerations': 2, // Reset to Free plan limit
+              'subscription.isActive': false
             }
-        });
-        console.log(`Successfully cancelled subscription for user with stripeId ${subscription.id}`);
+          },
+          { new: true }
+        );
+        
+        if (!cancelledUser) {
+          console.error(`User with stripeId ${subscription.id} not found for cancellation`);
+        } else {
+          console.log(`Successfully cancelled subscription for user ${cancelledUser.email} (${cancelledUser.id})`);
+        }
         break;
 
       default:
